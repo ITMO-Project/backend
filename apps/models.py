@@ -1,5 +1,5 @@
 import os
-from django.db import models
+import json
 
 class JsonEncryptionEditor:
     @staticmethod
@@ -29,4 +29,3 @@ class JsonEncryptionEditor:
                 }
                 return returnEncryption
         return {}
-

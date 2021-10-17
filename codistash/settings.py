@@ -4,7 +4,7 @@ import os, sys
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 PROJECT_ROOT = os.path.dirname(__file__)  # константа для определения текущей директории
-sys.path.insert(0, os.path.join(PROJECT_ROOT, "apps"))  # добавление пути к приложениям к списку системных путей
+# sys.path.insert(0, os.path.join(PROJECT_ROOT, "common"))  # добавление пути к приложениям к списку системных путей
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-dgav3)341+a_171^nxq0$2d_j__&o4h!^yp!7+p^1j=zfqp3!_'
@@ -18,6 +18,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'common',
     'main',
     'encryption',
     'decryption',
