@@ -20,6 +20,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'main',
     'encryption',
+    'decryption',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

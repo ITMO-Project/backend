@@ -1,10 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Decrypted</title>
-    <link rel="stylesheet" href="static/style.css">
+    <title>Decryption</title>
+    <link rel="stylesheet" href="{% static 'decryption/style.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 </head>
 <body>
@@ -26,39 +27,38 @@
     <!-- content -->
     <div class="container" style="margin-top:40px;">
         <div class="row">
-            <div class="col-sm-3"></div>
-            <div class="col-sm-6 content1">
-                <div id="process">
-                    <br>
-                    <h3>Идет процесс дешифрования</h3>
-                    <p style="margin-top: 30px; text-align: center">Это может занять несколько ваших драгоценных секунд</p>
-                    <div style=" padding-top: 50px; padding-bottom: 80px; width: 200px; margin: 0 auto;">
-                        <img src="images/loader.gif" style="width: 200px;">
-                    </div>
-                    <div class="button-center" >
-                        <button class="btn-primary" id="ok" style="border-radius: 5px; width: 100%; display: none;">Готово!</button>
-                    </div>
-                </div>
-                <div id="success" style="display: none;">
-                    <br>
-                    <h3>Дешифрование завершено</h3>
-                    <p style="margin-top: 30px; text-align: center">Теперь вы можете скачать получившийся файл</p>
+            <div class="col-10-sm content1" >
+                <br>
+                <h3>Дещифрование файлов</h3>
+                <div class="content-text">
+                    <p style="margin-top: 30px;" >Шифрование помогает сохранять данные в секрете, но одновременно привлекает лишнее внимание. Если файл просто так не открыть,
+                        значит, в нем есть что-то ценное. Поэтому важно скрыть само наличие секретной информации. Проще всего это сделать, расворив
+                        кондифенциальные данные внутри какого-нибудь безобидного файла. Выберите файл для шифрования (<sapn style="color: red;">не более 1Мб</sapn>) и переходите к выбору 
+                        изображения
+                    </p>
                     <div class="container1">
-                        <div style="width: 400px; margin: 0 auto; text-align: center;">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="color: blue;" width="100" height="200" fill="currentColor" class="bi bi-file-earmark" viewBox="0 0 16 16">
-                                <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
-                            </svg>
-
-                            <p>Hello-world.txt</p>
-                        </div>
-
+                        <div class="drag-area">
+                            <div class="img">
+                                <img src="" alt="" id="img">
+                            </div>
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" style="color: blue;" width="50" height="50" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">
+                                    <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+                                    <path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2zM14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1zM2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1h-10z"/>
+                                </svg>
+                            </div>
+                            <input id="input" type="file" hidden accept=".png, .jpg, .jpeg">
+                            <span class="header">Drag & Drop</span>
+                            <span class="header">or <span class="button" onclick="document.getElementById('input').click();">browse</span></span>
+                            <span class = "support"> Support: JPEG, JPG, PNG</span>
+                        </div>  
                     </div>
-                    <div style="width: 250px; text-align: center; margin: 0 auto;">
-                        <button class="btn-secondary" style="border-radius: 5px; margin-top: 20px;">На главную</button>
-                        <button class="btn-primary" style="border-radius: 5px; margin-bottom: 20px; width: 100px;">Скачать</button>
+                    <div class="button-center">
+                        <button onclick="deleted()" class="btn-danger" style="border-radius: 5px;">Удалить файл</button>
+                        <button class="btn-primary" style="border-radius: 5px;">Выбрать файл</button>
                     </div>
                 </div>
-            <div class="col-sm-3"></div>
+            </div>
         </div>
 
         <!-- footer -->
@@ -85,16 +85,70 @@
             </div>
         </footer>
     </div>
+    
     <script>
-        var success = document.querySelector("#success")
-        var process = document.querySelector("#process")
+        // Upload image
+        const dragArea = document.querySelector(".drag-area");
+        const dragText = document.querySelector(".header");
 
-        function ok(){
-            process.style.display = "none";
-            success.style.display = "block";
+        var button  = document.querySelector(".button")
+        var input = document.querySelector("#input")
+
+
+
+        function displayFile(){
+            let fileType = file.type;
+            let validExtensions = ["image/jpeg","image/jpg", "image/png"];
+
+            if(validExtensions.includes(fileType)){
+                let fileReader = new FileReader();
+
+                fileReader.onload = () =>{
+                    let fileURL = fileReader.result;
+                    document.querySelector("#img").setAttribute('src', fileURL);
+                    document.querySelector(".img").style.display = "block";
+                };
+                fileReader.readAsDataURL(file);
+            } else{
+                alert("This file is not an Image!!!");
+                dragArea.classList.remove("active");
+                dragText.textContent = "Drag & Drop";
+            }
         }
 
-        setTimeout(ok, 4000)
+        input.addEventListener("change", function(){
+            file = this.files[0]
+            dragArea.classList.add("active")
+            displayFile();
+        })
+
+        dragArea.addEventListener("dragover", (event) =>{
+            event.preventDefault();
+            dragText.textContent = "Release to Upload";
+            dragArea.classList.add("active");
+        })
+
+        dragArea.addEventListener("dragleave", (event) =>{
+            event.preventDefault();
+            dragText.textContent = "Drag & Drop";
+            dragArea.classList.remove("active");
+        })
+
+        dragArea.addEventListener("drop", (event) =>{
+            event.preventDefault();
+            file = event.dataTransfer.files[0];
+            displayFile();
+        })
+
+
+        // Delete image
+        function deleted(){
+            let img = document.querySelector(".img")
+            img.setAttribute('src',"")
+            img.style.display ="none"
+            dragArea.classList.remove("active");
+            dragText.textContent = "Drag & Drop"
+        }
     </script>
 </body>
 </html>
