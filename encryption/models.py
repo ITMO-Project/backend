@@ -1,4 +1,6 @@
 from django import forms
+from django.db import models
+from django.db.models.base import Model
 from django.core.validators import FileExtensionValidator
 import os
 
@@ -70,3 +72,11 @@ class UploadFilesForDecrypt(forms.Form):
         if imageExpansion != ".bmp":
             raise Exception("Для изображений доступен только формат .bmp")
         return super().clean()
+
+
+class Post(models.Model):
+    title = models.TextField()
+    cover = models.ImageField(upload_to='images/')
+
+    def __str__(self):
+        return self.title
