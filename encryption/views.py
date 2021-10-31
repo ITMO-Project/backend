@@ -26,7 +26,7 @@ def fileUpload(request):
     return render(request, 'encryption/encryption.html')
 
 def encryptionImageRender(request):
-    return render(request, 'encryption/encryption_image.html')
+    return render(request, 'encryption/encryption_images.html')
 
 def finishEncrypt(request):
     returnDict = IninitializeUser.initialize(request.session.get("userId", 0))  # присваиваем словарь с куками

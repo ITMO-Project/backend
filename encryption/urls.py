@@ -6,5 +6,5 @@ app_name = "encryption"
 urlpatterns = [
     path("", views.encryptionRender, name="Encryption"),
     path("image/", views.encryptionImageRender, name="EncryptionImage"),
-    path("encrypted/", views.encryptionImageRender, name="Encrypted"),
+    path("encrypted/", views.finishEncrypt, name="Encrypted"),
 ]
