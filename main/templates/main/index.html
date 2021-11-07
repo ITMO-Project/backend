@@ -30,7 +30,7 @@
             <div class="col-sm-1"></div>
             <div class="col-sm-4 map-image-content">
                 <div class="map-image">
-                    <button class="map-image__item">
+                    <button class="map-image__item" onclick="location.href='{% url 'encryption:Encryption' %}'">
                         <img src="../../static/map_image/encode.png" alt="">
                         <h3 class="map-image__text">Зашифровать</h3>
                     </button>
@@ -40,7 +40,7 @@
                     </button>
                 </div>
                 <div class="map-image">
-                    <button class="map-image__item">
+                    <button class="map-image__item" onclick="location.href='{% url 'decryption:Decryption' %}'">
                         <img src="../../static/map_image/media-encoder.png" alt="">
                         <h3 class="map-image__text">Расшифровать</h3>
                     </button>

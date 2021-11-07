@@ -30,6 +30,8 @@ input.addEventListener("change", function(){
 })
 
 function deleted_file(){
+    input.value = "";
+    file = "";
     dragArea.classList.remove('active');
     document.querySelector(".file-upload").style.display = "none"
 }

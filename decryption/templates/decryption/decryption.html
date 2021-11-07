@@ -36,7 +36,7 @@
                         кондифенциальные данные внутри какого-нибудь безобидного файла. Выберите файл для шифрования (<span style="color: red;">не более 1Мб</span>) и переходите к выбору
                         изображения
                     </p>
-                    <form action="" method="POST" >
+                    <form method="POST" enctype="multipart/form-data" action={% url 'decryption:Decrypted' %} >
                         {%csrf_token%}
                         <div class="container1">
                             <div class="drag-area">
@@ -49,17 +49,17 @@
                                         <path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2zM14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1zM2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1h-10z"/>
                                     </svg>
                                 </div>
-                                <input id="input" name="file" type="file" hidden accept=".png, .jpg, .jpeg">
+                                <input id="input" name="file" type="file" multiple hidden>
                                 <span class="header">Drag & Drop</span>
                                 <span class="header">or <span class="button" onclick="document.getElementById('input').click();">browse</span></span>
                                 <span class = "support"> Support: JPEG, JPG, PNG</span>
                             </div>
                         </div>
                         <div class="button-center">
-                            <button onclick="deleted()" class="btn-danger" style="border-radius: 5px;">Удалить файл</button>
-                            <button class="btn-primary" style="border-radius: 5px;" onclick="location.href='{% url 'decryption:Decrypted' %}'">Выбрать файл</button>
+                            <button class="btn-primary" style="border-radius: 5px;">Выбрать файл</button>
                         </div>
-                    <form>
+                    </form>
+                    <button onclick="deleted()" class="btn-danger" style="border-radius: 5px;">Удалить файл</button>
                 </div>
             </div>
         </div>

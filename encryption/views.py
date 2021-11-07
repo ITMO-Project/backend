@@ -1,125 +1,144 @@
 import random
 
 import zipfile
+import magic
 from django.core.files.storage import FileSystemStorage
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 import os
 import sys
 import shutil
 from django.shortcuts import redirect
-from .models import IninitializeUser, UploadFilesForEncrypt
-from .models import JsonEncryptionEditor
+from .models import IninitializeUser, FileModel, FileForm
 
+# Constants
 MAX_FILE_SIZE = 1048576  # 1 Мб
+PATH_FOR_ENCODE = "files for encode/"
+PATH_FOR_DECODE = "files for decode/"
+PATH_FOR_UPLOAD = "files for upload/"
+
+# Params
+PARAM_UPLOADED_FILE_URL = "filePath"
+
 
 def encryptionRender(request):
     return render(request, 'encryption/encryption.html')
 
-def fileUpload(request):
-    if request.method == 'POST' and request.FILES['file']:
-        file = request.FILES['file']
-        fs = FileSystemStorage(location="upload")
-        filename = fs.save(file.name, file)
-        uploaded_file_url = fs.url(filename)
-        returnParams = {'uploadedFileUrl': uploaded_file_url }
-        return render(request, 'encryption/encryption.html', returnParams)
-    return render(request, 'encryption/encryption.html')
-
 def encryptionImageRender(request):
-    return render(request, 'encryption/encryption_images.html')
-
-def finishEncrypt(request):
-    returnDict = IninitializeUser.initialize(request.session.get("userId", 0))  # присваиваем словарь с куками
     try:
         if request.method == "POST":
-            form = UploadFilesForEncrypt(request.POST, request.FILES)  # модель формы
-            # проверка на правильность введённых полей
-            if form.is_valid():
-                # проверка на максимальный размер файла
-                fileSize = form.cleaned_data.get("file").size
-                if fileSize > MAX_FILE_SIZE:
-                    raise Exception("Выберите файл поменьше!")
+            if 'encrypt' in request.POST:
+                # form = FileForm(request.POST, request.FILES)
+                # file = form.cleaned_data.get("file")
+                # if form.is_valid():
+                uploadedFileUrl = copyFileToServer(file=request.FILES["file"], path=PATH_FOR_ENCODE)
+                returnParams = {"filePath": uploadedFileUrl}
+                return render(request, 'encryption/encryption_images.html', returnParams)
 
-                # сохранение файла и изображения на сервер
-                filePath = copyToServer("encode", image=request.FILES["image"], file=request.FILES["file"])
-                imageDecryptPath = encode(request.FILES["file"].name, request.FILES["image"].name,
-                                          os.path.dirname(filePath)+"/", request.session.get("userId", 0))  # шифрование файла
-                returnDict["filePath"] = imageDecryptPath
-                returnDict["action"] = "encode"
-                return render(request, "saveData.html", returnDict)
+        # если зашли по GET запросу
+        return render(request, 'encryption/encryption.html')
 
-            raise Exception("Неверные данные формы!")
-        redirect("encryption:encryption")  # если зашли по GET запросу
     except Exception as error:
-        returnDict["error"] = error
-        returnDict["UploadFilesForEncrypt"] = UploadFilesForEncrypt
-        return render(request, "encryption/encrypted.html", returnDict)
+        print(error)
+        return render(request, "encryption/encryption.html")
 
 
+def finishEncryptRender(request):
+    print(request.POST)
+    print(request.FILES)
+    try:
+        if request.method == "POST" and "filePath" in request.POST:
+            # form = FileForm(request.POST, request.FILES)  # модель формы
+            # # проверка на правильность введённых полей
+            # if form.is_valid():
+                # проверка на максимальный размер файла
+                # fileSize = form.cleaned_data.get("file").size
+                # if fileSize > MAX_FILE_SIZE:
+                #     raise Exception("Выберите файл поменьше!")
 
+            filePath = request.POST["filePath"]
+            print("filePath = " + filePath)
+            imagePath = copyFileToServer(file=request.FILES["image"], path=PATH_FOR_ENCODE)
+            print("imagePath = " + imagePath)
+            imageDecryptPath = encode(filePath=filePath, imagePath=imagePath, userId=request.session.get("userId", 0))
+            print("imageDecryptPath = " + imageDecryptPath)
+            returnParams = {"filePath": imageDecryptPath}
+            print(returnParams)
+            return render(request, "encrypted.html", returnParams)
+        else:
+            redirect("encryption:encryption")  # если зашли по GET запросу
+    except Exception as error:
+        print(error)
+        return render(request, "encryption/encrypted.html")
 
+def saveToClientRender(request):
+    print("saveToClientRender")
+    print(request.POST)
+    try:
+        if request.method == "POST":
+            # imagePath = request.POST["filePath"]
+            # TODO: заглушка
+            imagePath = "files for upload/imageName.bmp"
+            print("imagePath = " + imagePath)
+            with open(imagePath, "rb") as image:
+                dataFile = image.read()  # чтение файла
+                mimeType = magic.from_buffer(dataFile, mime=True)  # читаем mime тип файла
+                response = HttpResponse(dataFile, content_type=mimeType)  # записываем в response файл и его mime тип
+                response["Content-Disposition"] = "attachment; filename = " + os.path.basename(imagePath)  # записываем в response имя файла
+            try:
+                os.remove(imagePath)
+            except Exception as error:
+                raise Exception("Ошибка сервера при удалении файла!")
+            return response
 
+        return redirect("main/index.html")
+    except Exception as error:
+        print(error)
+        return render(request, "main/index.html")
 
-
-# копирование файла и изображения на сервер (или то или то, или то и то)
-def copyToServer(action, **kwargs):
-    path = ""  # путь для сохранения файлов
-    fileIn = None  # временнный файл с которого будем считывать
-    imageIn = kwargs["image"]  # временное изображение с которого будем считывать
-    # определяем действие
-    if action == "encode":
-        fileIn = kwargs["file"]  # сохраняем ссылку на передаваемый от клиента фйл
-        path = "files for encode/"
-    elif action == "decode":
-        path = "files for decode/"
-
-    # копирование изображения в "files for encode/"
-    with open(path + imageIn.name, "wb") as imageOut:
-        # ленивое копирование (блочно, т.е. быстрее)
-        for chunk in imageIn.chunks():
-            imageOut.write(chunk)
-
-        "TODO: освободить память от файлов в kwargs"
-
-        # копирование файла (только при расшифровке) в "files for encode/"
-        if action == "encode":
-            with open(path + fileIn.name, "wb") as fileOut:
-                # ленивое копирование (блочно, т.е. быстрее)
-                for chunk in fileIn.chunks():
-                    fileOut.write(chunk)
-            return path + fileIn.name
-
-        return path + imageIn.name
-
-"TODO: усилить защиту"
+def copyFileToServer(file, path):
+    try:
+        # wb - write binary
+        with open(path + file.name, "wb") as fileOut:
+            # ленивое копирование (блочно, т.е. быстрее)
+            for chunk in file.chunks():
+                fileOut.write(chunk)
+        return path + file.name
+    except Exception as error:
+        print(error)
+        return ""
 
 # шифрование файла (+44 бита)
-def encode(fileName, imageName, pathToFile, userId):
+def encode(filePath, imagePath, userId):
     # определяем кодовые значения
     codeWord = bin(ord("o"))[2:] + bin(ord("k"))[2:]  # кодовое слово, сведения успешно вставлены (14 бит)
-    key1 = random.randint(0, 16)  # рандомное число от 0 до 16 (4 бита)
-    key2 = random.randint(0, 255)  # рандомное число от 0 до 255 (1 байт)
+    # key1 = random.randint(0, 16)  # рандомное число от 0 до 16 (4 бита)
+    # key2 = random.randint(0, 255)  # рандомное число от 0 до 255 (1 байт)
 
     # определям id шифрования (18 бит)
-    dataBase_Encryption, encryptionsList = JsonEncryptionEditor.decodeJson()
-    encryptionId = encryptionsList[len(encryptionsList) - 1]["encryptionId"] + 1
+    # dataBase_Encryption, encryptionsList = JsonEncryptionEditor.decodeJson()
+    # encryptionId = encryptionsList[len(encryptionsList) - 1]["encryptionId"] + 1
+    # TODO: временно
+    encryptionId = 0
     encryptionIdBits = bin(encryptionId)[2:].zfill(18)
 
     # архивируем файл
     try:
-        zipping(pathToFile + "code{}.zip".format(userId), pathToFile + fileName)
+        zipping(PATH_FOR_ENCODE + "code{}.zip".format(userId), filePath)
     except Exception as error:
         raise Exception("Ошибка сервера при архивировании!")
 
-    os.chdir(pathToFile)
+    os.chdir(PATH_FOR_ENCODE)
     fileSize = os.stat("code{}.zip".format(userId)).st_size
     os.chdir("../")
 
     # шифруем
-    with open(pathToFile + "code{}.zip".format(userId), "rb") as file:
-        with open(pathToFile + imageName, "rb+") as image:
-            if fileSize * 8 + 320 + 32 + 32 + 44 > os.stat(pathToFile + imageName).st_size * 6:
-                raise Exception("Файл не вмешается в изображение!")
+    with open(PATH_FOR_ENCODE + "code{}.zip".format(userId), "rb") as file:
+        with open(imagePath, "rb+") as image:
+            print("aaaaa fileSize = " + str(fileSize * 8 + 320 + 32 + 32 + 44))
+            print("aaaaa imageSize = " + str(os.stat(imagePath).st_size * 6))
+            if fileSize * 8 + 320 + 32 + 32 + 44 > os.stat(imagePath).st_size * 6:
+                raise Exception("Файл не вмещается в изображение!")
             fileSizeBinary = bin(fileSize * 8)[2:].zfill(
                 8)  # размер файла в битах (для шифровки), берём без обозначения двоичного кода
             fileSizeBinary = fileSizeBinary.zfill(32)  # дополняем размер файла нулями (максимум - 512 Мб)
@@ -162,7 +181,9 @@ def encode(fileName, imageName, pathToFile, userId):
 
             # шифруем байты файла
             for i in range(fileSize):
-                fileByte = ((int.from_bytes(file.read(1), sys.byteorder) + key1) % 256) ^ key2
+                # fileByte = ((int.from_bytes(file.read(1), sys.byteorder) + key1) % 256) ^ key2
+                # TODO: Временно
+                fileByte = ((int.from_bytes(file.read(1), sys.byteorder)) % 256)
                 # записываем 4 раза по 2 бита одного байта файла
                 for j in range(4):
                     imageByte = int.from_bytes(image.read(1),
@@ -176,23 +197,24 @@ def encode(fileName, imageName, pathToFile, userId):
 
     # перемещаем изображение в др. рабочую директорию и удаляем файл и архив
     try:
-        shutil.move(pathToFile + imageName, "encode images/" + imageName)  # перенос изображения
-        os.remove(pathToFile + fileName)  # удаление файла
-        os.remove(pathToFile + "code{}.zip".format(userId))
+        shutil.move(imagePath, PATH_FOR_UPLOAD + "imageName.bmp")  # перенос изображения
+        os.remove(filePath)  # удаление файла
+        os.remove(PATH_FOR_ENCODE + "code{}.zip".format(userId))
     except Exception as error:
         raise Exception("Ошибка сервера при копировании файла!")
 
     # добавление операции в базу данных
-    newEncrypyion = {
-        "encryptionId": encryptionId,
-        "userId": userId,
-        "key1": key1,
-        "key2": key2
-    }
-    encryptionsList.append(newEncrypyion)
-    JsonEncryptionEditor.dumpJson(dataBase_Encryption)
+    # newEncrypyion = {
+    #     "encryptionId": encryptionId,
+    #     "userId": userId,
+    #     "key1": key1,
+    #     "key2": key2
+    # }
+    # encryptionsList.append(newEncrypyion)
+    # JsonEncryptionEditor.dumpJson(dataBase_Encryption)
 
-    return "encode images/" + imageName  # возвращаем путь до изображения
+    return PATH_FOR_UPLOAD + "imageName.bmp"  # возвращаем путь до изображения
+
 
 # замена 2 битов изображения на биты файла
 def imageMaskEncode(fileByte, imageByte, bitPos):
@@ -202,6 +224,7 @@ def imageMaskEncode(fileByte, imageByte, bitPos):
     imageByte &= 0b11111100
     imageByte |= fileByte  # устанавливаем последние 2 бита изображения = битам файла
     return int.to_bytes(imageByte, 1, sys.byteorder)
+
 
 # архивация
 def zipping(arhievePath, filePath):

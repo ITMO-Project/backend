@@ -36,7 +36,7 @@
                         кондифенциальные данные внутри какого-нибудь безобидного файла. Выберите файл для шифрования (<sapn style="color: red;">не более 1Мб</sapn>) и переходите к выбору 
                         изображения
                     </p>
-                    <form action="" method="POST" >
+                    <form method="POST" enctype="multipart/form-data" action={% url 'encryption:EncryptionImage' %}>
                         {%csrf_token%}
                         <div class="container1">
                             <div class="drag-area">
@@ -49,15 +49,14 @@
                                         <path fill-rule="evenodd" d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z"/>
                                     </svg>
                                 </div>
-                                <input id="input" name="file" type="file" hidden accept=".pdf , .docx, .xlsx, .csv">
+                                <input id="input" name="file" type="file" multiple required hidden>
                                 <span class="header">Drag & Drop</span>
                                 <span class="header">or <span class="button" onclick="document.getElementById('input').click();">browse</span></span>
                                 <span class = "support"> Support: PDF, DOCX, XLSX, CSV</span>
                             </div>
                         </div>
                         <div class="button-center">
-                            <button onclick="deleted_file()" class="btn-danger" style="border-radius: 5px;">Удалить файл</button>
-                            <button class="btn-primary" style="border-radius: 5px;" onclick="location.href='{% url 'encryption:EncryptionImage' %}'">Выбрать файл</button>
+                            <button name="encrypt" class="btn-primary" style="border-radius: 5px;">Выбрать файл</button>
                         </div>
                     </form>
                 </div>

@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Post
+from .models import FileModel, ImageModel
 # Register your models here.
 
-admin.site.register(Post)
+admin.site.register(FileModel)
+admin.site.register(ImageModel)

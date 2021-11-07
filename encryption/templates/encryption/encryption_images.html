@@ -37,7 +37,7 @@
                     <div>
                         <ul class="nav nav-pills">
                             <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com.jpg" onclick="changeImage('one')" id='one' name ='one'></li>
-                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (1).jpg" onclick="changeImage('two')" id='two' name='two'></li>
+                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com_(1).bmp" onclick="changeImage('two')" id='two' name='two'></li>
                             <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (2).jpg" onclick="changeImage('three')" id='three' name ='three'></li>
                             <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (3).jpg" onclick="changeImage('four')" id='four' name ='four'></li>
                             <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (4).jpg" onclick="changeImage('five')" id='five' name ='five'></li>
@@ -45,7 +45,7 @@
                             <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (6).jpg" onclick="changeImage('seven')" id='seven' name ='seven'></li>
                             <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (7).jpg" onclick="changeImage('eight')" id='eight' name ='eight'></li>
                         </ul>
-                        <form action="" method="POST" >
+                        <form method="POST" enctype="multipart/form-data" action={% url 'encryption:Encrypted' %}>
                             {%csrf_token%}
                             <div class="container1">
                                 <div class="drag-area">
@@ -58,17 +58,18 @@
                                             <path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2zM14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1zM2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1h-10z"/>
                                         </svg>
                                     </div>
-                                    <input id="input" name="file" type="file" hidden accept=".png, .jpg, .jpeg">
+                                    <input id="input" name="image" type="file" multiple hidden>
+                                    <input id="inputFile" name="filePath" type="text" value="{{ filePath }}" multiple hidden>
                                     <span class="header">Drag & Drop</span>
                                     <span class="header">or <span class="button" onclick="document.getElementById('input').click();">browse</span></span>
                                     <span class = "support"> Support: JPEG, JPG, PNG</span>
                                 </div>
                             </div>
                             <div class="button-center" >
-                                <button onclick="deleted()" class="btn-danger" style="border-radius: 5px;">Удалить файл</button>
-                                <button class="btn-primary" style="border-radius: 5px;" onclick="location.href='{% url 'encryption:Encrypted' %}'">Зашифровать</button>
+                                <button name="encrypt" class="btn-primary" style="border-radius: 5px;">Зашифровать</button>
                             </div>
-                        <form>
+                        </form>
+                            <button onclick="deleted()" class="btn-danger" style="border-radius: 5px;">Удалить файл</button>
                     </div>
                 </div>
             </div>

@@ -11,7 +11,7 @@ function displayFile(){
     let fileType = file.type;
     let validExtensions = ["image/jpeg","image/jpg", "image/png"];
 
-    if(validExtensions.includes(fileType)){
+//    if(validExtensions.includes(fileType)){
         let fileReader = new FileReader();
 
         fileReader.onload = () =>{
@@ -20,11 +20,11 @@ function displayFile(){
             document.querySelector(".img").style.display = "block";
         };
         fileReader.readAsDataURL(file);
-    } else{
-        alert("This file is not an Image!!!");
-        dragArea.classList.remove("active");
-        dragText.textContent = "Drag & Drop";
-    }
+//    } else{
+//        alert("This file is not an Image!!!");
+//        dragArea.classList.remove("active");
+//        dragText.textContent = "Drag & Drop";
+//    }
 }
 
 input.addEventListener("change", function(){
