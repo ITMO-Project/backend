@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Encryption_images</title>
     <link rel="stylesheet" href="{% static 'encryption/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 </head>
@@ -36,14 +37,14 @@
                     </p>
                     <div>
                         <ul class="nav nav-pills">
-                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com.jpg" onclick="changeImage('one')" id='one' name ='one'></li>
-                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com_(1).bmp" onclick="changeImage('two')" id='two' name='two'></li>
-                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (2).jpg" onclick="changeImage('three')" id='three' name ='three'></li>
-                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (3).jpg" onclick="changeImage('four')" id='four' name ='four'></li>
-                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (4).jpg" onclick="changeImage('five')" id='five' name ='five'></li>
-                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (5).jpg" onclick="changeImage('six')" id='six' name ='six'></li>
-                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (6).jpg" onclick="changeImage('seven')" id='seven' name ='seven'></li>
-                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (7).jpg" onclick="changeImage('eight')" id='eight' name ='eight'></li>
+                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com.bmp" onclick="changeImage('one')" id='one' name ='one'></li>
+                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (1).bmp" onclick="changeImage('two')" id='two' name='two'></li>
+                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (2).bmp" onclick="changeImage('three')" id='three' name ='three'></li>
+                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (3).bmp" onclick="changeImage('four')" id='four' name ='four'></li>
+                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (4).bmp" onclick="changeImage('five')" id='five' name ='five'></li>
+                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (5).bmp" onclick="changeImage('six')" id='six' name ='six'></li>
+                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (6).bmp" onclick="changeImage('seven')" id='seven' name ='seven'></li>
+                            <li class="nav-item"><img src="../../static/our_images/bg_bggenerator_com (7).bmp" onclick="changeImage('eight')" id='eight' name ='eight'></li>
                         </ul>
                         <form method="POST" enctype="multipart/form-data" action={% url 'encryption:Encrypted' %}>
                             {%csrf_token%}
@@ -51,6 +52,9 @@
                                 <div class="drag-area">
                                     <div class="img">
                                         <img src="" alt="" id="img">
+                                        <span onclick="deleted()" class="btn-close-file">
+                                            <i class="btn-close-file-icon bi bi-x"></i>
+                                        </span>
                                     </div>
                                     <div>
                                         <svg xmlns="http://www.w3.org/2000/svg" style="color: blue;" width="50" height="50" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">
@@ -60,16 +64,16 @@
                                     </div>
                                     <input id="input" name="image" type="file" multiple hidden>
                                     <input id="inputFile" name="filePath" type="text" value="{{ filePath }}" multiple hidden>
+                                    <input id="inputImage" name="defaultImage" value="" type="text" multiple hidden>
                                     <span class="header">Drag & Drop</span>
                                     <span class="header">or <span class="button" onclick="document.getElementById('input').click();">browse</span></span>
-                                    <span class = "support"> Support: JPEG, JPG, PNG</span>
+                                    <span class = "support"> Support: BMP</span>
                                 </div>
                             </div>
                             <div class="button-center" >
                                 <button name="encrypt" class="btn-primary" style="border-radius: 5px;">Зашифровать</button>
                             </div>
                         </form>
-                            <button onclick="deleted()" class="btn-danger" style="border-radius: 5px;">Удалить файл</button>
                     </div>
                 </div>
             </div>

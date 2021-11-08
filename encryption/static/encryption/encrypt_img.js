@@ -1,6 +1,8 @@
 // Add modal
 var modal = document.getElementById("myModal");
 var span = document.getElementsByClassName("close")[0];
+var inputImage = document.querySelector("#inputImage")
+
 
 span.onclick = function() {
     modal.style.display = "none";
@@ -31,6 +33,12 @@ function choise(){
     img = document.querySelector("#img")
     img.setAttribute('src',srcImgMain)
     document.querySelector(".img").style.display = "block";
+
+    let value = srcImgMain
+    let index = value.indexOf("bg")
+    let valueInputImage = value.slice(index, -4)
+    inputImage.setAttribute("value", valueInputImage)
+    console.log(inputImage.getAttribute("value"))
 }
 
 // Delete image
@@ -41,6 +49,7 @@ function deleted(){
     img.style.display ="none"
     dragArea.classList.remove("active");
     dragText.textContent = "Drag & Drop"
+    inputImage.setAttribute("value", "")
 }
 
 // Upload image
@@ -54,9 +63,9 @@ var input = document.querySelector("#input")
 
 function displayFile(){
     let fileType = file.type;
-    let validExtensions = ["image/jpeg","image/jpg", "image/png", "image/bmp"];
+    let validExtensions = ["image/bmp"];
 
-//    if(validExtensions.includes(fileType)){
+    if(validExtensions.includes(fileType)){
         let fileReader = new FileReader();
 
         fileReader.onload = () =>{
@@ -65,11 +74,11 @@ function displayFile(){
             document.querySelector(".img").style.display = "block";
         };
         fileReader.readAsDataURL(file);
-//    } else{
-//        alert("This file is not an Image!!!");
-//        dragArea.classList.remove("active");
-//        dragText.textContent = "Drag & Drop";
-//    }
+    } else{
+        alert("Invalid file!!!");
+        dragArea.classList.remove("active");
+        dragText.textContent = "Drag & Drop";
+    }
 }
 
 input.addEventListener("change", function(){

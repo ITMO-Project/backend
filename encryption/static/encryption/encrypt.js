@@ -4,21 +4,10 @@ const dragArea = document.querySelector(".drag-area")
 const dragText = document.querySelector(".header")
 
 function displayFile(){
-    let fileType = file.type;
-    let validExtensions = ["application/vnd.ms-excel","application/pdf",
-                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
-
-    if(validExtensions.includes(fileType)){
-        fileName = file.name;
-        let fileName_text = document.querySelector(".name-file");
-        fileName_text.textContent = fileName;
-        document.querySelector(".file-upload").style.display = "block";
-    } else{
-        alert("Invalid file!!!")
-        dragArea.classList.remove("active");
-        dragText.textContent = "Drag & Drop";
-    }
+    fileName = file.name;
+    let fileName_text = document.querySelector(".name-file");
+    fileName_text.textContent = fileName;
+    document.querySelector(".file-upload").style.display = "block";
 }
 
 var input = document.querySelector("#input")

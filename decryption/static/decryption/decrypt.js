@@ -4,14 +4,15 @@ const dragText = document.querySelector(".header");
 
 var button  = document.querySelector(".button")
 var input = document.querySelector("#input")
+var inputImage = document.querySelector("#inputImage")
 
 
 
 function displayFile(){
     let fileType = file.type;
-    let validExtensions = ["image/jpeg","image/jpg", "image/png"];
+    let validExtensions = ["image/bmp"];
 
-//    if(validExtensions.includes(fileType)){
+    if(validExtensions.includes(fileType)){
         let fileReader = new FileReader();
 
         fileReader.onload = () =>{
@@ -20,11 +21,11 @@ function displayFile(){
             document.querySelector(".img").style.display = "block";
         };
         fileReader.readAsDataURL(file);
-//    } else{
-//        alert("This file is not an Image!!!");
-//        dragArea.classList.remove("active");
-//        dragText.textContent = "Drag & Drop";
-//    }
+    } else{
+        alert("Invalid file!!!");
+        dragArea.classList.remove("active");
+        dragText.textContent = "Drag & Drop";
+    }
 }
 
 input.addEventListener("change", function(){
@@ -56,7 +57,9 @@ dragArea.addEventListener("drop", (event) =>{
 function deleted(){
     let img = document.querySelector(".img")
     img.setAttribute('src',"")
-    img.style.display ="none"
+    img.style.display ="none";
     dragArea.classList.remove("active");
-    dragText.textContent = "Drag & Drop"
+    dragText.textContent = "Drag & Drop";
+    inputImage.setAttribute("value", "");
+
 }
