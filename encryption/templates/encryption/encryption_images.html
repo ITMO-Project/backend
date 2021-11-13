@@ -64,9 +64,8 @@
                         </div>
                         <div class="button-center" >
                             <button onclick="deleted()" class="btn-danger" style="border-radius: 5px;">Удалить файл</button>
-                            <button class="btn-primary" style="border-radius: 5px;">Зашифровать</button>
+                            <button class="btn-primary" style="border-radius: 5px;" onclick="location.href='{% url 'encryption:Encrypted' %}'">Зашифровать</button>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -80,8 +79,8 @@
                 <img src="" id="main" name="">
                 <button onclick="choise()" class="btn btn-success" style="margin-left: 35px;" >Выбрать</button>
                 <span class="prev" onclick="plusSlides(-1)">&#10094;</span>
-                <spspann class="next" onclick="plusSlides(1)">&#10095;</span>    
-            </dispan>
+                <span class="next" onclick="plusSlides(1)">&#10095;</span>
+            </div>
         </div>
 
 

@@ -28,31 +28,42 @@
     <div class="container" style="margin-top:40px;">
         <div class="row">
             <div class="col-sm-1"></div>
-            <div class="col-sm-4 content">
-                <br>
-                <h3>Шифрование файлов</h3>
-                <div class="content-text">
-                    <p style="margin-top: 30px;" >Шифрование помогает сохранять данные в секрете, но одновременно привлекает лишнее внимание. Если файл просто так не открыть,
-                        значит, в нем есть что-то ценное. Поэтому важно скрыть само наличие секретной информации. Проще всего это сделать, расворив
-                        кондифенциальные данные внутри какого-нибудь безобидного файла.
-                    </p>
+            <div class="col-sm-4 map-image-content">
+                <div class="map-image">
+                    <button class="map-image__item" onclick="location.href='{% url 'encryption:Encryption' %}'">
+                        <img src="../../static/map_image/encode.png" alt="">
+                        <h3 class="map-image__text">Зашифровать</h3>
+                    </button>
+                    <button class="map-image__item">
+                        <img src="../../static/map_image/security.png" alt="">
+                        <h3 class="map-image__text">Зашифровать безопасно</h3>
+                    </button>
                 </div>
-                <a href="{% url 'encryption:Encryption' %}"><button type="button" class="btn btn-primary">Зашифровать</button></a>
-                <a href="{% url 'decryption:Decryption' %}"><button type="button" class="btn btn-primary" style="margin-bottom: 20px;">Дешифровать</button></a>
+                <div class="map-image">
+                    <button class="map-image__item" onclick="location.href='{% url 'decryption:Decryption' %}'">
+                        <img src="../../static/map_image/media-encoder.png" alt="">
+                        <h3 class="map-image__text">Расшифровать</h3>
+                    </button>
+                    <button class="map-image__item">
+                        <img src="../../static/map_image/history.png" alt="">
+                        <h3 class="map-image__text">История шифрований</h3>
+                    </button>
+                </div>
             </div>
             <div class="col-sm-2"></div>
             <div class="col-sm-4 content">
                 <br>
-                <h3>Шифруйте без ограничения</h3>
+                <h3>Шифруйте безопасно</h3>
                 <div class="content-text">
-                    <p style="margin-top: 30px;">Неавторизованный пользователь может возпользоваться услугами шифрования до 3 раз,
-                        после этого ему будет необходимо зарегистрироваться
+                    <p style="margin-top: 30px; text-align: center;">Неавторизованный пользователь может возпользоваться услугами шифрования и расшировки, однако если вы хотите, чтобы
+                        полученный файл могли расшифровать только вы, необходимо авторизоваться
                     </p>
                 </div>
-                <br>
-                <h3>Осталось шифрований: <span style="color: red;">3</span></h3>
-                <a href="#"><button type="button" class="btn btn-success">Регистрация</button></a>
-                <a href="#"><button type="button" class="btn btn-success">Вход</button></a>
+                <div class="content-text">
+                    <p style="color: red; text-align: center;">Безопасное шифрование не доступно для неавторизованных пользователей</p>
+                </div>
+                <a href="{% url 'register' %}"><button type="button" class="btn btn-success" style="margin-top:0;">Регистрация</button></a>
+                <a href="{% url 'login' %}"><button type="button" class="btn btn-success">Вход</button></a>
             </div>
         </div>
 
@@ -80,6 +91,57 @@
             </div>
         </footer>
     </div>
+
+    <div class="ad">
+        <span class="btnClose">Close X</span>
+        <div class="ad-content1">
+            <h1 style="color: red;">Осталось</h1>
+            <div class="time"><span id="minute">05</span>:<span id="second">59</span></div>
+            <a href="#"><b>Для бесплатной регистрации</b></a>
+        </div>
+    </div>
+
+    <script>
+        const btnClose = document.querySelector(".btnClose")
+        const ad = document.querySelector(".ad")
+        let minute = 5
+        let second = 59
+        let appendMinute = document.querySelector("#minute")
+        let appendSecond = document.querySelector("#second")
+        let inTerval;
+
+        btnClose.addEventListener("click",()=>{
+            ad.style.display = "none"
+        })
+
+        function countDown(){
+            if(minute != 0 || second != 0){
+                second--
+                if(second < 0){
+                    second = 59
+                    minute--
+                }
+
+                if(second < 10){
+                    appendSecond.innerHTML = "0" + second
+                }else{
+                    appendSecond.innerHTML = second
+                }
+
+                if(minute < 10){
+                    appendMinute.innerHTML = "0" + minute
+                }else {
+                    appendMinute.innerHTML = minute
+                }
+            }else{
+                clearInterval(inTerval)
+                btnClose.click()
+            }
+
+        }
+
+        inTerval = setInterval(countDown, 1000)
+    </script>
 
 </body>
 </html>
