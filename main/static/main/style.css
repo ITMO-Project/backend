@@ -375,3 +375,9 @@ ul li img:hover {
     display: none;
     color: blue;
 }
+
+.map-image-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

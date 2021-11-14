@@ -29,26 +29,14 @@
         <div class="row">
             <div class="col-sm-1"></div>
             <div class="col-sm-4 map-image-content">
-                <div class="map-image">
-                    <button class="map-image__item" onclick="location.href='{% url 'encryption:Encryption' %}'">
-                        <img src="../../static/map_image/encode.png" alt="">
-                        <h3 class="map-image__text">Зашифровать</h3>
-                    </button>
-                    <button class="map-image__item">
-                        <img src="../../static/map_image/security.png" alt="">
-                        <h3 class="map-image__text">Зашифровать безопасно</h3>
-                    </button>
-                </div>
-                <div class="map-image">
-                    <button class="map-image__item" onclick="location.href='{% url 'decryption:Decryption' %}'">
-                        <img src="../../static/map_image/media-encoder.png" alt="">
-                        <h3 class="map-image__text">Расшифровать</h3>
-                    </button>
-                    <button class="map-image__item">
-                        <img src="../../static/map_image/history.png" alt="">
-                        <h3 class="map-image__text">История шифрований</h3>
-                    </button>
-                </div>
+                <img src="../../static/map_image/map-image.png" alt="map image" usemap="#map-image">
+
+                <map name="map-image">
+                    <area shape="rect" coords="18,30,168,175" alt="Зашифровать" href="{% url 'encryption:Encryption' %}">
+                    <area shape="rect" coords="252,30,385,175" alt="Зашифровать безопасно" href="#">
+                    <area shape="rect" coords="18,235,168,385" alt="Расшифровать" href="{% url 'decryption:Decryption' %}">
+                    <area shape="rect" coords="258,235,383,385" alt="История шифрования" href="#">
+                </map>
             </div>
             <div class="col-sm-2"></div>
             <div class="col-sm-4 content">
