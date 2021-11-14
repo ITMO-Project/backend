@@ -1,6 +1,8 @@
 import random
 
 import zipfile
+from tempfile import TemporaryFile
+
 import magic
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse, HttpResponse
@@ -16,6 +18,8 @@ MAX_FILE_SIZE = 1048576  # 1 Мб
 PATH_FOR_ENCODE = "files for encode/"
 PATH_FOR_DECODE = "files for decode/"
 PATH_FOR_UPLOAD = "files for upload/"
+PATH_ROOT = os.path.abspath(os.path.dirname(__name__))
+PATH_FOR_DEFAULT_IMAGES = PATH_ROOT + "/encryption/static/our_images/"
 
 # Params
 PARAM_UPLOADED_FILE_URL = "filePath"
@@ -47,7 +51,7 @@ def finishEncryptRender(request):
     print(request.POST)
     print(request.FILES)
     try:
-        if request.method == "POST" and "filePath" in request.POST:
+        if (request.method == "POST") and ("filePath" in request.POST):
             # form = FileForm(request.POST, request.FILES)  # модель формы
             # # проверка на правильность введённых полей
             # if form.is_valid():
@@ -56,9 +60,16 @@ def finishEncryptRender(request):
                 # if fileSize > MAX_FILE_SIZE:
                 #     raise Exception("Выберите файл поменьше!")
 
+            if "image" in request.FILES:
+                print("image = image")
+                image = request.FILES["image"]
+                imagePath = copyFileToServer(file=image, path=PATH_FOR_ENCODE)
+            elif request.POST["defaultImage"] != "":
+                print("image = defaultImage")
+                imagePath = PATH_FOR_DEFAULT_IMAGES + request.POST["defaultImage"] + ".bmp"
+            else:
+                raise Exception("Incorrect path for image-container")
             filePath = request.POST["filePath"]
-            print("filePath = " + filePath)
-            imagePath = copyFileToServer(file=request.FILES["image"], path=PATH_FOR_ENCODE)
             print("imagePath = " + imagePath)
             imageDecryptPath = encode(filePath=filePath, imagePath=imagePath, userId=request.session.get("userId", 0))
             print("imageDecryptPath = " + imageDecryptPath)
@@ -107,6 +118,14 @@ def copyFileToServer(file, path):
     except Exception as error:
         print(error)
         return ""
+
+#
+# def create_temporary_copy(path):
+#     tempImage = TemporaryFile("wb")
+#     tempDir = tempImage.gettempdir()
+#     tempPath = os.path.join(tempDir, 'temp_file_name')
+#     shutil.copy2(path, temp_path)
+#     return temp_path
 
 # шифрование файла (+44 бита)
 def encode(filePath, imagePath, userId):
@@ -197,7 +216,12 @@ def encode(filePath, imagePath, userId):
 
     # перемещаем изображение в др. рабочую директорию и удаляем файл и архив
     try:
-        shutil.move(imagePath, PATH_FOR_UPLOAD + "imageName.bmp")  # перенос изображения
+        if imagePath.__contains__(PATH_FOR_DEFAULT_IMAGES):
+            print("aaaaaa copy")
+            shutil.copy(imagePath, PATH_FOR_UPLOAD + "imageName.bmp")
+        else:
+            print("aaaaaa move")
+            shutil.move(imagePath, PATH_FOR_UPLOAD + "imageName.bmp")  # перенос изображения
         os.remove(filePath)  # удаление файла
         os.remove(PATH_FOR_ENCODE + "code{}.zip".format(userId))
     except Exception as error:

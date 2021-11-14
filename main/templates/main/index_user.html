@@ -17,7 +17,7 @@
                 <div class="col-sm-1"></div>
                 <div class="col-sm-6">
                     <a href="{% url 'Index' %}">
-                    <div><p style="font-size: 50px; color: blue;"><b>Название проекта</b></p></div>
+                    <div><p style="font-size: 50px; color: blue;"><b>Codistash</b></p></div>
                     </a>
                 </div>
                 <div class="col-sm-3"></div>
@@ -76,9 +76,9 @@
                         кондифенциальные данные внутри какого-нибудь безобидного файла. 
                     </p>
                 </div>
-                <a href="#"><button type="button" class="btn btn-primary">Зашифровать</button></a>
+                <a href="{% url 'encryption:Encryption' %}"><button type="button" class="btn btn-primary">Зашифровать</button></a>
                 <br>
-                <a href="#"><button type="button" class="btn btn-primary" style="margin-bottom: 20px;">Дешифровать</button></a>
+                <a href="{% url 'decryption:Decryption' %}"><button type="button" class="btn btn-primary" style="margin-bottom: 20px;">Дешифровать</button></a>
             </div>
             <div class="col-sm-2"></div>
             <div class="col-sm-4 content">
