@@ -16,13 +16,10 @@ def decryptionRender(request):
     return render(request, 'decryption/decryption.html')
 
 def decryptedRender(request):
-    print(request.POST)
-    print(request.FILES)
     try:
         if request.method == "POST":
             imagePath = copyFileToServer(file=request.FILES["file"], path=PATH_FOR_DECODE)
-            print("imagePath = " + imagePath)
-            decodedFileUrl = decode(imagePath=imagePath, userId=0)
+            decodedFileUrl = decode(imagePath=imagePath, userId=int(request.user.id or 0))
             returnParams = {"filePath": decodedFileUrl}
             return render(request, 'decryption/decrypted.html', returnParams)
 
@@ -129,10 +126,8 @@ def saveToClientRender(request):
     try:
         if request.method == "POST":
             archivePath = request.POST["filePath"]  # путь + имя файла
-            print("archivePath = " + archivePath)
             try:
                 fileName = unzipping(archivePath)  # разархивируем файл и запоминаем его имя
-                print("fileName = " + fileName)
             except Exception as error:
                 print(error)
                 raise Exception("Ошибка сервера при архивации!")
@@ -145,7 +140,6 @@ def saveToClientRender(request):
                 raise Exception("Ошибка сервера при удалении файла!")
 
             filePath = PATH_FOR_DECODE + fileName
-            print("filePath = " + filePath)
             with open(filePath, "rb") as file:
                 dataFile = file.read()  # чтение файла
                 mimeType = magic.from_buffer(dataFile, mime=True)  # читаем mime тип файла
@@ -168,7 +162,9 @@ def saveToClientRender(request):
         return redirect("main/index")  # если перешли по GET запросу
     except Exception as error:
         print(error)
-        return render(request, "main/index.html")
+        if int(request.user.id or 0) > 0:
+            return render(request, 'main/index_user.html')
+        return render(request, 'main/index.html')
 
 # разархивация
 def unzipping(arhievePath):

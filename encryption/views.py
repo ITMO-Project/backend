@@ -1,17 +1,12 @@
-import random
-
 import zipfile
-from tempfile import TemporaryFile
 
 import magic
-from django.core.files.storage import FileSystemStorage
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import render
 import os
 import sys
 import shutil
 from django.shortcuts import redirect
-from .models import IninitializeUser, FileModel, FileForm
 
 # Constants
 MAX_FILE_SIZE = 1048576  # 1 Мб
@@ -32,9 +27,6 @@ def encryptionImageRender(request):
     try:
         if request.method == "POST":
             if 'encrypt' in request.POST:
-                # form = FileForm(request.POST, request.FILES)
-                # file = form.cleaned_data.get("file")
-                # if form.is_valid():
                 uploadedFileUrl = copyFileToServer(file=request.FILES["file"], path=PATH_FOR_ENCODE)
                 returnParams = {"filePath": uploadedFileUrl}
                 return render(request, 'encryption/encryption_images.html', returnParams)
@@ -61,20 +53,20 @@ def finishEncryptRender(request):
                 #     raise Exception("Выберите файл поменьше!")
 
             if "image" in request.FILES:
-                print("image = image")
                 image = request.FILES["image"]
                 imagePath = copyFileToServer(file=image, path=PATH_FOR_ENCODE)
             elif request.POST["defaultImage"] != "":
-                print("image = defaultImage")
                 imagePath = PATH_FOR_DEFAULT_IMAGES + request.POST["defaultImage"] + ".bmp"
             else:
                 raise Exception("Incorrect path for image-container")
             filePath = request.POST["filePath"]
-            print("imagePath = " + imagePath)
-            imageDecryptPath = encode(filePath=filePath, imagePath=imagePath, userId=request.session.get("userId", 0))
-            print("imageDecryptPath = " + imageDecryptPath)
+            imageDecryptPath = encode(
+                filePath=filePath,
+                imagePath=imagePath,
+                userId=int(request.user.id or 0),
+                username=str(request.user.username or "user")
+            )
             returnParams = {"filePath": imageDecryptPath}
-            print(returnParams)
             return render(request, "encrypted.html", returnParams)
         else:
             redirect("encryption:encryption")  # если зашли по GET запросу
@@ -83,14 +75,11 @@ def finishEncryptRender(request):
         return render(request, "encryption/encrypted.html")
 
 def saveToClientRender(request):
-    print("saveToClientRender")
-    print(request.POST)
     try:
         if request.method == "POST":
             # imagePath = request.POST["filePath"]
             # TODO: заглушка
-            imagePath = "files for upload/imageName.bmp"
-            print("imagePath = " + imagePath)
+            imagePath = "files for upload/imageWithFile-" + str(request.user.username or "user") + ".bmp"
             with open(imagePath, "rb") as image:
                 dataFile = image.read()  # чтение файла
                 mimeType = magic.from_buffer(dataFile, mime=True)  # читаем mime тип файла
@@ -102,10 +91,14 @@ def saveToClientRender(request):
                 raise Exception("Ошибка сервера при удалении файла!")
             return response
 
-        return redirect("main/index.html")
+        if int(request.user.id or 0) > 0:
+            return render(request, 'main/index_user.html')
+        return render(request, 'main/index.html')
     except Exception as error:
         print(error)
-        return render(request, "main/index.html")
+        if int(request.user.id or 0) > 0:
+            return render(request, 'main/index_user.html')
+        return render(request, 'main/index.html')
 
 def copyFileToServer(file, path):
     try:
@@ -119,24 +112,10 @@ def copyFileToServer(file, path):
         print(error)
         return ""
 
-#
-# def create_temporary_copy(path):
-#     tempImage = TemporaryFile("wb")
-#     tempDir = tempImage.gettempdir()
-#     tempPath = os.path.join(tempDir, 'temp_file_name')
-#     shutil.copy2(path, temp_path)
-#     return temp_path
-
 # шифрование файла (+44 бита)
-def encode(filePath, imagePath, userId):
+def encode(filePath, imagePath, userId, username):
     # определяем кодовые значения
     codeWord = bin(ord("o"))[2:] + bin(ord("k"))[2:]  # кодовое слово, сведения успешно вставлены (14 бит)
-    # key1 = random.randint(0, 16)  # рандомное число от 0 до 16 (4 бита)
-    # key2 = random.randint(0, 255)  # рандомное число от 0 до 255 (1 байт)
-
-    # определям id шифрования (18 бит)
-    # dataBase_Encryption, encryptionsList = JsonEncryptionEditor.decodeJson()
-    # encryptionId = encryptionsList[len(encryptionsList) - 1]["encryptionId"] + 1
     # TODO: временно
     encryptionId = 0
     encryptionIdBits = bin(encryptionId)[2:].zfill(18)
@@ -217,27 +196,16 @@ def encode(filePath, imagePath, userId):
     # перемещаем изображение в др. рабочую директорию и удаляем файл и архив
     try:
         if imagePath.__contains__(PATH_FOR_DEFAULT_IMAGES):
-            print("aaaaaa copy")
-            shutil.copy(imagePath, PATH_FOR_UPLOAD + "imageName.bmp")
+            shutil.copy(imagePath, PATH_FOR_UPLOAD + "imageWithFile-" + username + ".bmp")
         else:
-            print("aaaaaa move")
-            shutil.move(imagePath, PATH_FOR_UPLOAD + "imageName.bmp")  # перенос изображения
+            shutil.move(imagePath, PATH_FOR_UPLOAD + "imageWithFile-" + username + ".bmp")  # перенос изображения
         os.remove(filePath)  # удаление файла
         os.remove(PATH_FOR_ENCODE + "code{}.zip".format(userId))
     except Exception as error:
+        print(error)
         raise Exception("Ошибка сервера при копировании файла!")
 
-    # добавление операции в базу данных
-    # newEncrypyion = {
-    #     "encryptionId": encryptionId,
-    #     "userId": userId,
-    #     "key1": key1,
-    #     "key2": key2
-    # }
-    # encryptionsList.append(newEncrypyion)
-    # JsonEncryptionEditor.dumpJson(dataBase_Encryption)
-
-    return PATH_FOR_UPLOAD + "imageName.bmp"  # возвращаем путь до изображения
+    return PATH_FOR_UPLOAD + "imageWithFile-" + username + ".bmp"  # возвращаем путь до изображения
 
 
 # замена 2 битов изображения на биты файла

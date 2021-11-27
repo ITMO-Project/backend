@@ -5,8 +5,13 @@ from django.contrib import messages
 
 
 def indexRender(request):
+    print(request.user.id)
+    if int(request.user.id or 0) > 0:
+        return render(request, 'main/index_user.html')
     return render(request, 'main/index.html')
 
 def indexUserRender(request):
-    return render(request, 'main/index_user.html')
+    if int(request.user.id or 0) > 0:
+        return render(request, 'main/index_user.html')
+    return render(request, 'main/index.html')
 

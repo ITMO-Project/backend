@@ -5,8 +5,6 @@ from main.views import indexUserRender
 from main.views import indexRender 
 from users.views import register
 
-from django.contrib.auth import views as auth_views 
-
 urlpatterns = [
     #url(r"^dashboard/", dashboard, name="dashboard"),
     url(r"accounts/", include("django.contrib.auth.urls")),
