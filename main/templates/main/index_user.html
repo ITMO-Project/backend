@@ -20,13 +20,10 @@
                     <div><p style="font-size: 50px; color: blue;"><b>Codistash</b></p></div>
                     </a>
                 </div>
-                <div class="col-sm-3"></div>
-
-                <div class="col-sm-1" style="margin-top: 25px;"><a href="">{{ user.email }}</a></div>
-
-                <div class="col-sm-1">
-                    <div style="margin-top: 25px;">                   
-                        <a href="#" id="myBtn" style="color: black;">
+                <div class="col-sm-5 user-icon">
+                    <div style="margin-top: 25px;">
+                        <a href="">{{ user.email }}</a>
+                        <a href="#" id="myBtn" style="color: black; margin-right: 50px;">
                             <svg id="myBtn" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
                                 <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
@@ -37,7 +34,7 @@
                         <div class="modal1" id="myModal" >
                             <div class="modal-content2">
                                 <span class="close" >&times;</span>
-                                <div style="margin-left: 40px; margin-top: 5px;">                                                         
+                                <div  style="margin-top: 5px; text-align: center;">
                                     <p><b>Профиль</b></p>    
                                 </div>        
                                 <div style="text-align: center;"> 
@@ -51,9 +48,11 @@
                                 <a href="{% url 'password_change' %}">Сменить пароль</a>
 
                                 <div style=" margin-top: 15px;">
-                                    <a href="{% url 'logout' %}">
-                                        <input class="btn-danger" type="submit" style="margin-top:5px; border-radius: 5px; margin-left: 48px;" value="Выйти">
-                                    </a>
+                                    <div style="text-align: center;">
+                                        <a href="{% url 'logout' %}">
+                                            <input class="btn-danger" type="submit" value="Выйти">
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -81,18 +80,8 @@
                 <a href="{% url 'decryption:Decryption' %}"><button type="button" class="btn btn-primary" style="margin-bottom: 20px;">Дешифровать</button></a>
             </div>
             <div class="col-sm-2"></div>
-            <div class="col-sm-4 content">
-                <br>
-                <h3>Шифрование файлов</h3>
-                <div class="content-text">
-                    <p style="margin-top: 30px;" >Безопасное шифрование позволяет вам быть уверенным, что файл, который вы зашифруете, сможете расшифровать только вы. Иногда
-                        это может быть полезным. Однако если вы хотите передать зашифрованный файл кому-то, чтобы этот человек расшифровал его, вам следует воспользоваться
-                        обычным шифрованием и расшировкой.
-                    </p>
-                </div>
-                <a href="#"><button type="button" class="btn btn-primary" style="margin-top:0">Безопасно зашифровать</button></a>
-                <br>
-                <a href="#"><button type="button" class="btn btn-primary" style="margin-bottom: 20px;">Безопасно расшифровать</button></a>
+            <div class="col-sm-4">
+                <img style="width: 100%;" src="../../static/images/encryption-image.png" alt="">
             </div>
             </div>
         </div>
@@ -100,7 +89,7 @@
         <!-- footer -->
         <footer style="margin-top: 80px;">
             <hr>
-            <div class="center">
+            <div class="footer">
                 <span><i>About us:&ensp;</i></span>
                 <a href="#" style="text-decoration: none;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">						

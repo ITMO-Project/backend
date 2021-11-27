@@ -50,8 +50,9 @@ h3 {
     margin: 0px 15px 0px 15px;
 }
 
-.center{
-    margin-left: 1000px;
+.footer{
+    display: flex;
+    justify-content: flex-end;
 }
 
 /* The modal */

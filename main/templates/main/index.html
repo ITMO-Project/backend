@@ -29,13 +29,11 @@
         <div class="row">
             <div class="col-sm-1"></div>
             <div class="col-sm-4 map-image-content">
-                <img class="image_map"  src="../../static/map_image/map-image.png" alt="map image" height="426px" usemap="#map-image">
+                <img class="image_map"  src="../../static/map_image/map-image1.png" alt="map image" height="426px" usemap="#map-image">
 
                 <map name="map-image">
                     <area shape="rect" coords="18,30,168,175" alt="Зашифровать" href="{% url 'encryption:Encryption' %}">
-                    <area shape="rect" coords="252,30,385,175" alt="Зашифровать безопасно" href="#">
-                    <area shape="rect" coords="18,235,168,385" alt="Расшифровать" href="{% url 'decryption:Decryption' %}">
-                    <area shape="rect" coords="258,235,383,385" alt="История шифрования" href="#">
+                    <area shape="rect" coords="252,30,385,175" alt="Дешифровать" href="{% url 'decryption:Decryption' %}">
                 </map>
             </div>
             <div class="col-sm-2"></div>
@@ -58,7 +56,7 @@
         <!-- footer -->
         <footer style="margin-top: 80px;">
             <hr>
-            <div class="center">
+            <div class="footer">
                 <span><i>About us:&ensp;</i></span>
                 <a href="#" style="text-decoration: none;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">

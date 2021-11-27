@@ -50,8 +50,14 @@ h3 {
     margin: 0px 15px 0px 15px;
 }
 
-.center{
-    margin-left: 1000px;
+.footer{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.user-icon{
+    justify-content: flex-end;
+    display: flex;
 }
 
 /* The modal */
@@ -82,12 +88,13 @@ h3 {
 }
 
 .modal-content2{
+    position: absolute;
     background-color: #fefefe;
-    margin-left: 1250px;
-    padding: 20px;
+    right: 62px;
+    top: 90px;
     border: 1px solid #888;
-    width: 13%;
-    height: 32%;
+    width: 200px;
+    height: 175px;
     border-radius: 15px;
 }
 
@@ -118,8 +125,10 @@ h3 {
 
 /* The Close Button */
 .close {
+    position: absolute;
     color: #aaaaaa;
-    float: right;
+    right: 10px;
+    top: 0;
     font-size: 28px;
     font-weight: bold;
 }
@@ -275,7 +284,7 @@ ul li img:hover {
 
 .prev {
     left: 0;
-    border-radius: 0px 3 3 0px;
+    border-radius: 0 3px 3px 0;
 }
 
   /* On hover, add a black background color with a little bit see-through */
