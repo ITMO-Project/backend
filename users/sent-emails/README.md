@@ -1,0 +1,1 @@
+This directory is for temporary emails with password reset link.
