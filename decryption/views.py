@@ -1,25 +1,54 @@
 import os
-import zipfile
 import sys
-from django.shortcuts import render
-from .models import JsonEncryptionEditor
+import zipfile
+from urllib.parse import quote
 
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.utils.http import urlquote
+from magic import magic
+
+PATH_FOR_ENCODE = "files for encode/"
+PATH_FOR_DECODE = "files for decode/"
+PATH_FOR_UPLOAD = "files for upload/"
 
 def decryptionRender(request):
     return render(request, 'decryption/decryption.html')
 
 def decryptedRender(request):
-    return render(request, 'decryption/decrypted.html')
+    print(request.POST)
+    print(request.FILES)
+    try:
+        if request.method == "POST":
+            imagePath = copyFileToServer(file=request.FILES["file"], path=PATH_FOR_DECODE)
+            print("imagePath = " + imagePath)
+            decodedFileUrl = decode(imagePath=imagePath, userId=0)
+            returnParams = {"filePath": decodedFileUrl}
+            return render(request, 'decryption/decrypted.html', returnParams)
+
+        return render(request, 'decryption/decrypted.html')
+    except Exception as error:
+        print(error)
+        return render(request, 'decryption/decrypted.html')
 
 
 
 
+def copyFileToServer(file, path):
+    try:
+        # wb - write binary
+        with open(path + file.name, "wb") as fileOut:
+            # ленивое копирование (блочно, т.е. быстрее)
+            for chunk in file.chunks():
+                fileOut.write(chunk)
+        return path + file.name
+    except Exception as error:
+        print(error)
+        return ""
 
-# расшифровка файла
-def decode(imageName, userId):
+def decode(imagePath, userId):
     encryptionId = ""
     codeWordBits = ""
-    imagePath = "files for decode/{}".format(imageName)
     with open(imagePath, "rb") as image:
         fileSize = 0  # размер файла
         image.seek(54)  # пропскаем первые 54 байта изображения
@@ -46,16 +75,16 @@ def decode(imageName, userId):
         encryptionId = int(encryptionId, base=2)
 
         # поиск операции шифрования из БД
-        dataBase_Encryption, encryptionsList = JsonEncryptionEditor.decodeJson()
-        encryptionDict = JsonEncryptionEditor.findEncryptionById(encryptionId, encryptionsList)
+        # dataBase_Encryption, encryptionsList = JsonEncryptionEditor.decodeJson()
+        # encryptionDict = JsonEncryptionEditor.findEncryptionById(encryptionId, encryptionsList)
 
         # проверка на то, что пользователь не может расшифровать файл другого
-        if encryptionDict == {}:
-            raise Exception("Произошла ошибка в базе данных!")
-        elif encryptionDict["userId"] != userId:
-            raise Exception("Зашифрованные данные принадлежат не вам!")
-        key1 = encryptionDict["key1"]
-        key2 = encryptionDict["key2"]
+        # if encryptionDict == {}:
+        #     raise Exception("Произошла ошибка в базе данных!")
+        # elif encryptionDict["userId"] != userId:
+        #     raise Exception("Зашифрованные данные принадлежат не вам!")
+        # key1 = encryptionDict["key1"]
+        # key2 = encryptionDict["key2"]
 
         # расшифровываем размер файла
         for i in range(0, 32, 8):
@@ -67,8 +96,10 @@ def decode(imageName, userId):
 
         fileSize >>= 2  # т.к. в цикле сделали лишнее действие << 2 при выходе
         fileSize //= 8  # приводим к байту
+
         # создание файла и запись битов, прочитанных с изображения
-        with open("decode files/code{}.zip".format(userId), "wb") as file:
+        filePath = PATH_FOR_DECODE + "code{}.zip".format(userId)
+        with open(filePath, "wb") as file:
             for i in range(fileSize):
                 fileByteBinary = 0  # отдельный байт файла в двоичном виде
                 # читаем 4*2 = 8 бит файла
@@ -81,21 +112,68 @@ def decode(imageName, userId):
                 fileByteBinary >>= 2
                 # декодируем байт
 
-                fileByteBinary ^= key2
-                if fileByteBinary < key1:
-                    fileByteBinary = 256 - (key1 - fileByteBinary)
-                else:
-                    fileByteBinary -= key1
+                # fileByteBinary ^= key2
+                # if fileByteBinary < key1:
+                #     fileByteBinary = 256 - (key1 - fileByteBinary)
+                # else:
+                #     fileByteBinary -= key1
                 file.write(int.to_bytes(fileByteBinary, 1, sys.byteorder))  # запись байта в файл
     try:
         os.remove(imagePath)
+        return filePath
     except Exception as error:
+        print(error)
         raise Exception("Ошибка сервера при удалении изображения!")
+
+def saveToClientRender(request):
+    try:
+        if request.method == "POST":
+            archivePath = request.POST["filePath"]  # путь + имя файла
+            print("archivePath = " + archivePath)
+            try:
+                fileName = unzipping(archivePath)  # разархивируем файл и запоминаем его имя
+                print("fileName = " + fileName)
+            except Exception as error:
+                print(error)
+                raise Exception("Ошибка сервера при архивации!")
+
+            # удаляем заархивированный файл
+            try:
+                os.remove(archivePath)
+            except Exception as error:
+                print(error)
+                raise Exception("Ошибка сервера при удалении файла!")
+
+            filePath = PATH_FOR_DECODE + fileName
+            print("filePath = " + filePath)
+            with open(filePath, "rb") as file:
+                dataFile = file.read()  # чтение файла
+                mimeType = magic.from_buffer(dataFile, mime=True)  # читаем mime тип файла
+                response = HttpResponse(dataFile, content_type=mimeType)  # записываем в response файл и его mime тип
+                # urlquote - перевод русских символов в понятные браузеру
+                try:
+                    fileName.encode('ascii')
+                    file_expr = "filename={}".format(fileName)
+                except UnicodeEncodeError:
+                    file_expr = "filename*=utf-8''{}".format(quote(fileName))
+                response['Content-Disposition'] = "attachment; {}".format(file_expr)
+            # удаляем изображение
+            try:
+                os.remove(filePath)
+            except Exception as error:
+                print(error)
+                raise Exception("Ошибка сервера при удалении файла!")
+            return response  # если всё прошло удачно
+
+        return redirect("main/index")  # если перешли по GET запросу
+    except Exception as error:
+        print(error)
+        return render(request, "main/index.html")
 
 # разархивация
 def unzipping(arhievePath):
     with zipfile.ZipFile(arhievePath) as unzippingFile:
         fileName = unzippingFile.namelist()[0]  # получаем список заархивированных файлов (пока берём один-первый)
-        unzippingFile.extract(member=fileName, path="decode files/")  # разархивация файла
+        unzippingFile.extract(member=fileName, path=PATH_FOR_DECODE)  # разархивация файла
         unzippingFile.close()
         return fileName
