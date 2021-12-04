@@ -44,9 +44,15 @@
                     <br>
                     <h3>Шифрование завершено</h3>
                     <p style="margin-top: 30px; text-align: center">Теперь вы можете скачать получившийся файл</p>
-                    <div class="container1">
-                        <img class="encrypted" src="../../static/our_images/bg_6.bmp" alt="" >
-                    </div>
+                    {% if frontImagePath %}
+                        <div class="container1">
+                            <img class="encrypted" src="{{ frontImagePath }}" alt="" >
+                        </div>
+                    {% else %}
+                        <div class="container1">
+                            <img class="encrypted" src="../../static/our_images/bg_6.bmp" alt="" >
+                        </div>
+                    {% endif %}
                     <div style="width: 250px; text-align: center; margin: 0 auto;">
                         <button class="btn-secondary" style="border-radius: 5px; margin-top: 20px;" onclick="location.href='{% url 'main:Index' %}'">На главную</button>
                         <form method="POST" enctype="multipart/form-data" action={% url 'encryption:Save' %}>

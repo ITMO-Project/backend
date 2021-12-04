@@ -15,6 +15,7 @@ PATH_FOR_DECODE = "files for decode/"
 PATH_FOR_UPLOAD = "files for upload/"
 PATH_ROOT = os.path.abspath(os.path.dirname(__name__))
 PATH_FOR_DEFAULT_IMAGES = PATH_ROOT + "/encryption/static/our_images/"
+PATH_FOR_DEFAULT_IMAGES_FRONT = "../../static/our_images/"
 
 # Params
 PARAM_UPLOADED_FILE_URL = "filePath"
@@ -66,8 +67,9 @@ def finishEncryptRender(request):
                 userId=int(request.user.id or 0),
                 username=str(request.user.username or "user")
             )
-            returnParams = {"filePath": imageDecryptPath}
-            return render(request, "encrypted.html", returnParams)
+            frontImagePath = PATH_FOR_DEFAULT_IMAGES_FRONT + request.POST["defaultImage"] + ".bmp"
+            returnParams = {"filePath": imageDecryptPath, "frontImagePath": frontImagePath}
+            return render(request, "encryption/encrypted.html", returnParams)
         else:
             redirect("encryption:encryption")  # если зашли по GET запросу
     except Exception as error:
