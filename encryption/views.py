@@ -57,7 +57,10 @@ def finishEncryptRender(request):
                 image = request.FILES["image"]
                 imagePath = copyFileToServer(file=image, path=PATH_FOR_ENCODE)
             elif request.POST["defaultImage"] != "":
-                imagePath = PATH_FOR_DEFAULT_IMAGES + request.POST["defaultImage"] + ".bmp"
+                imagePath = copyDefaultImageToServer(
+                    defaultPath=PATH_FOR_DEFAULT_IMAGES + request.POST["defaultImage"] + ".bmp",
+                    pathForCopy=PATH_FOR_ENCODE + request.POST["defaultImage"] + ".bmp"
+                )
             else:
                 raise Exception("Incorrect path for image-container")
             filePath = request.POST["filePath"]
@@ -110,6 +113,14 @@ def copyFileToServer(file, path):
             for chunk in file.chunks():
                 fileOut.write(chunk)
         return path + file.name
+    except Exception as error:
+        print(error)
+        return ""
+
+def copyDefaultImageToServer(defaultPath, pathForCopy):
+    try:
+     shutil.copy(defaultPath, pathForCopy)
+     return pathForCopy
     except Exception as error:
         print(error)
         return ""
