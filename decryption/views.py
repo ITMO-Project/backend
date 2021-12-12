@@ -6,7 +6,7 @@ from urllib.parse import quote
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.utils.http import urlquote
-from magic import magic
+import magic
 
 PATH_FOR_ENCODE = "files for encode/"
 PATH_FOR_DECODE = "files for decode/"
