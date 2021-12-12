@@ -7,10 +7,10 @@ PROJECT_ROOT = os.path.dirname(__file__)  # константа для опред
 # sys.path.insert(0, os.path.join(PROJECT_ROOT, "common"))  # добавление пути к приложениям к списку системных путей
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-dgav3)341+a_171^nxq0$2d_j__&o4h!^yp!7+p^1j=zfqp3!_'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['codistash.herokuapp.com', '127.0.0.1']
 
@@ -74,7 +74,7 @@ DATABASES = {
         'HOST': 'ec2-34-249-247-7.eu-west-1.compute.amazonaws.com',
         'PORT': '5432',
         'USER': 'gdsinaemfinjms',
-        'PASSWORD': '17903617ca41660c69aebcb221bfe54cb628e8731be3459208b5beafa594d3c1',
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
     }
 }
 
