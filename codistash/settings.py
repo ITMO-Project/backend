@@ -68,8 +68,12 @@ WSGI_APPLICATION = 'codistash.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd80e9jqoreftju',
+        'HOST': 'ec2-34-249-247-7.eu-west-1.compute.amazonaws.com',
+        'PORT': '5432',
+        'USER': 'gdsinaemfinjms',
+        'PASSWORD': '17903617ca41660c69aebcb221bfe54cb628e8731be3459208b5beafa594d3c1',
     }
 }
 
