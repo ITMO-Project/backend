@@ -7,12 +7,12 @@ PROJECT_ROOT = os.path.dirname(__file__)  # константа для опред
 # sys.path.insert(0, os.path.join(PROJECT_ROOT, "common"))  # добавление пути к приложениям к списку системных путей
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-dgav3)341+a_171^nxq0$2d_j__&o4h!^yp!7+p^1j=zfqp3!_'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['codistash.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -39,6 +39,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'codistash.urls'
@@ -68,8 +69,12 @@ WSGI_APPLICATION = 'codistash.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd80e9jqoreftju',
+        'HOST': 'ec2-34-249-247-7.eu-west-1.compute.amazonaws.com',
+        'PORT': '5432',
+        'USER': 'gdsinaemfinjms',
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
     }
 }
 
@@ -111,6 +116,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
