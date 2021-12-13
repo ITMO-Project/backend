@@ -36,11 +36,12 @@
                     {% csrf_token %}
                         <div class="content-text" style="text-align: right;" >
                             <input type="username" class="form-control" required id="username" name="username" placeholder="Enter username" style="height: 50px;">
+                            <br>
                             <input type="email" class="form-control" required id="email" name="email" placeholder="Enter email" style="height: 50px;">
                             <div class="text-error3" style="color: red;"></div>
                             <br>
                             <div style="display: flex; flex-direction: row;">
-                                <input type="password1" class="form-control" required id="password1" name="password1" placeholder="Enter password" style="height: 50px; width: 330px;">
+                                <input type="password" class="form-control" required id="password1" name="password1" placeholder="Enter password" style="height: 50px; width: 330px;">
                                 <div class="icon" style="display: block;" onclick="open_passwd()" id="one">
                                     <svg xmlns="http://www.w3.org/2000/svg" style="margin-top: 12px;" width="26" height="26" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
                                         <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
@@ -57,7 +58,7 @@
                             <div class="text-error" style="color: red;"></div>
                             <br>
                             <div style="display: flex; flex-direction: row;">
-                                <input type="password2" class="form-control" required id="password2" name="password2" placeholder="Confirm password" style="height: 50px; width: 330px;">
+                                <input type="password" class="form-control" required id="password2" name="password2" placeholder="Confirm password" style="height: 50px; width: 330px;">
                                 <div class="icon" onclick="open_passwd_confirm()" id="three">
                                     <svg xmlns="http://www.w3.org/2000/svg" style="margin-top: 12px;" width="26" height="26" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
                                         <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
@@ -113,7 +114,7 @@
 
     <script>
         function open_passwd(){
-            let passwd = document.querySelector("#password")
+            let passwd = document.querySelector("#password1")
             let icon1 = document.querySelector("#one")
             let icon2 = document.querySelector("#two")
 
@@ -123,7 +124,7 @@
         }
 
         function close_passwd(){
-            let passwd = document.querySelector("#password")
+            let passwd = document.querySelector("#password1")
             let icon1 = document.querySelector("#one")
             let icon2 = document.querySelector("#two")
 
@@ -133,7 +134,7 @@
         }
 
         function open_passwd_confirm(){
-            let passwd_confirm = document.querySelector("#password_confirm")
+            let passwd_confirm = document.querySelector("#password2")
             let icon3 = document.querySelector("#three")
             let icon4 = document.querySelector("#four")
 
@@ -143,7 +144,7 @@
         }
 
         function close_passwd_confirm(){
-            let passwd_confirm = document.querySelector("#password_confirm")
+            let passwd_confirm = document.querySelector("#password2")
             let icon3 = document.querySelector("#three")
             let icon4 = document.querySelector("#four")
 

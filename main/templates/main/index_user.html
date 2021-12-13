@@ -32,22 +32,22 @@
 
                         <!-- modal -->
                         <div class="modal1" id="myModal" >
-                            <div class="modal-content2" style="position: absolute;background-color: #fefefe;right: 62px;top: 90px;border: 1px solid #888;width: 200px;height: 175px;border-radius: 15px;">
+                            <div class="modal-content2" style="height:unset" style="position: absolute;background-color: #fefefe;right: 62px;top: 90px;border: 1px solid #888;width: 200px;height: 175px;border-radius: 15px;">
                                 <span class="close" style="position: absolute;color: #aaaaaa;right: 10px;top: 0;font-size: 28px;font-weight: bold;" >&times;</span>
                                 <div  style="margin-top: 5px; text-align: center;">
                                     <p><b>Профиль</b></p>    
                                 </div>        
                                 <div style="text-align: center;"> 
-                                    <p><a href="#">{{ user.username }}</a></p>                            
+                                    <p><div href="#">Login: {{ user.username }}</div></p>                            
                                     <a href="#"><img src="../../static/images/russia-icon.png" style="width: 32px; height: 32px;" alt=""></a>
                                     <a href="#"><img src="../../static/images/uk-icon.png" style="width: 32px; height: 32px;" alt=""></a>
                                     <a href="#"><img src="../../static/images/vietnam-icon.png" style="width: 32px; height: 32px;" alt=""></a>
                                     <a href="#"><img src="../../static/images/brasil-icon.png" style="width: 32px; height: 32px;" alt=""></a>
                                 </div> 
 
-                                <a href="{% url 'password_change' %}">Сменить пароль</a>
+                                <a href="{% url 'password_change' %}" style="display: block; text-align: center;">Сменить пароль</a>
 
-                                <div style=" margin-top: 15px;">
+                                <div style="margin: 15px;">
                                     <div style="text-align: center;">
                                         <a href="{% url 'logout' %}">
                                             <input class="btn-danger" type="submit" value="Выйти">

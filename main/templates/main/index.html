@@ -78,56 +78,5 @@
         </footer>
     </div>
 
-    <div class="ad">
-        <span class="btnClose">Close X</span>
-        <div class="ad-content1">
-            <h1 style="color: red;">Осталось</h1>
-            <div class="time"><span id="minute">05</span>:<span id="second">59</span></div>
-            <a href="#"><b>Для бесплатной регистрации</b></a>
-        </div>
-    </div>
-
-    <script>
-        const btnClose = document.querySelector(".btnClose")
-        const ad = document.querySelector(".ad")
-        let minute = 5
-        let second = 59
-        let appendMinute = document.querySelector("#minute")
-        let appendSecond = document.querySelector("#second")
-        let inTerval;
-
-        btnClose.addEventListener("click",()=>{
-            ad.style.display = "none"
-        })
-
-        function countDown(){
-            if(minute != 0 || second != 0){
-                second--
-                if(second < 0){
-                    second = 59
-                    minute--
-                }
-
-                if(second < 10){
-                    appendSecond.innerHTML = "0" + second
-                }else{
-                    appendSecond.innerHTML = second
-                }
-
-                if(minute < 10){
-                    appendMinute.innerHTML = "0" + minute
-                }else {
-                    appendMinute.innerHTML = minute
-                }
-            }else{
-                clearInterval(inTerval)
-                btnClose.click()
-            }
-
-        }
-
-        inTerval = setInterval(countDown, 1000)
-    </script>
-
 </body>
 </html>
